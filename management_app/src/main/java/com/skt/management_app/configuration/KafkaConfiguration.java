@@ -1,5 +1,7 @@
 package com.skt.management_app.configuration;
 
+import com.skt.common.kafka.service.KafkaMessageService;
+import com.skt.common.kafka.service.KafkaMessageServiceImpl;
 import com.skt.common.kafka.service.KafkaService;
 import com.skt.common.kafka.service.KafkaServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,5 +22,10 @@ public class KafkaConfiguration {
     @Bean
     public KafkaService kafkaService() {
         return new KafkaServiceImpl(kafkaTemplate, topic);
+    }
+
+    @Bean
+    public KafkaMessageService kafkaMessageService() {
+        return new KafkaMessageServiceImpl();
     }
 }

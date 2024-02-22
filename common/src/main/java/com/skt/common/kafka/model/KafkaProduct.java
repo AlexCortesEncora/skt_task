@@ -1,11 +1,11 @@
-package com.skt.common.model;
+package com.skt.common.kafka.model;
 
-public class Product {
+public class KafkaProduct {
     private String name;
     private String description;
     private float price;
 
-    public Product(String name, String description, float price) {
+    public KafkaProduct(String name, String description, float price) {
         this.name = name;
         this.description = description;
         this.price = price;

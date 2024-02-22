@@ -34,15 +34,4 @@ public class KafkaServiceImpl implements KafkaService {
             LOG.error("Error send", e);
         }
     }
-
-    @Override
-    public KafkaMessage parsing(String message) {
-        try {
-            return objectMapper.readValue(message, KafkaMessage.class);
-        } catch (JsonMappingException | JsonParseException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

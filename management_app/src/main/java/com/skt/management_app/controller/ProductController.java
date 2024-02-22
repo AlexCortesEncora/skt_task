@@ -15,7 +15,7 @@ public class ProductController {
     @GetMapping("/products")
     public ModelAndView getAllStudents() {
         ModelAndView view = new ModelAndView("products");
-        view.addObject("products", productService.getProducts());
+        view.addObject("products", productService.sendGetAllMessage());
         return view;
     }
 }

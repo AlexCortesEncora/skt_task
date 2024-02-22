@@ -1,32 +1,58 @@
 package com.skt.management_app.core;
 
-import com.skt.common.kafka.service.KafkaMessageBuilder;
+import com.skt.common.kafka.model.KafkaMessage;
+import com.skt.common.kafka.model.KafkaProduct;
+import com.skt.common.kafka.service.KafkaMessageService;
 import com.skt.common.kafka.service.KafkaService;
-import com.skt.common.model.Product;
+import com.skt.management_app.model.Product;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ProductServiceImpl.class);
+
     @Autowired
     private KafkaService kafkaService;
 
-    @Override
-    public List<Product> getProducts() {
-        kafkaService.send(KafkaMessageBuilder.buildSelectRequest());
+    @Autowired
+    private KafkaMessageService kafkaMessageService;
 
-        List<Product> products = new ArrayList<>();
-        products.add(build("table", "garden", 99.99f));
-        products.add(build("chair", "garden", 9.9f));
-        products.add(build("test", "garden", -100.99f));
-        return products;
+    @Override
+    public List<Product> sendGetAllMessage() {
+        kafkaService.send(kafkaMessageService.buildSelectRequest());
+        return Collections.emptyList();
     }
 
-    private Product build(String name, String description, float price) {
-        return new Product(name, description, price);
+    @Override
+    public void processMessage(KafkaMessage message) {
+        switch (message.getAction()) {
+            case SELECT:
+                processSelectionAction(message);
+                break;
+            default:
+                LOG.error("Unsupported Action: " + message.getAction());
+                break;
+        }
+    }
+
+
+    private void processSelectionAction(KafkaMessage message) {
+        ((List<KafkaProduct>) message.getPayload())
+                .stream()
+                .map(this::product)
+                .collect(Collectors.toList())
+                .forEach(product -> LOG.info(product.toString()));
+    }
+
+    private Product product(KafkaProduct kafkaProduct) {
+        return new Product(kafkaProduct.getName(), kafkaProduct.getDescription(), kafkaProduct.getPrice());
     }
 }
