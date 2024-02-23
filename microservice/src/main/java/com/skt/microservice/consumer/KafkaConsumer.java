@@ -1,7 +1,6 @@
 package com.skt.microservice.consumer;
 
 import com.skt.common.kafka.service.KafkaMessageService;
-import com.skt.common.kafka.service.KafkaService;
 import com.skt.microservice.core.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +19,9 @@ public class KafkaConsumer {
     @Autowired
     private KafkaMessageService kafkaMessageService;
 
-    @KafkaListener(topics = "${kafka.topic.request.name}")
+    @KafkaListener(topics = "${kafka.topic.consumer.name}")
     public void listener(String message) {
         LOG.info("Message received {} ", message);
-        productService.processMessage(kafkaMessageService.parsing(message));
+        productService.processMessage(kafkaMessageService.parsingJsonToKafkaMessage(message));
     }
 }

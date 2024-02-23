@@ -1,5 +1,6 @@
 package com.skt.microservice.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skt.common.kafka.service.KafkaMessageService;
 import com.skt.common.kafka.service.KafkaMessageServiceImpl;
 import com.skt.common.kafka.service.KafkaService;
@@ -13,19 +14,35 @@ import org.springframework.kafka.core.KafkaTemplate;
 @Configuration
 public class KafkaConfiguration {
 
-    @Value(value = "${kafka.topic.response.name}")
-    private String topic;
+    @Value(value = "${spring.kafka.bootstrap-servers}")
+    private String server;
+
+    @Value(value = "${spring.kafka.consumer.group-id}")
+    private String groupId;
+
+    @Value(value = "${kafka.topic.producer.name}")
+    private String producerTopic;
+
+    @Value(value = "${kafka.topic.consumer.name}")
+    private String consumerTopic;
 
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
     @Bean
-    public KafkaService kafkaService() {
-        return new KafkaServiceImpl(kafkaTemplate, topic);
+    public ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper;
     }
 
     @Bean
-    public KafkaMessageService kafkaMessageService() {
-        return new KafkaMessageServiceImpl();
+    public KafkaMessageService kafkaMessageService(ObjectMapper objectMapper) {
+        return new KafkaMessageServiceImpl(objectMapper);
     }
+
+    @Bean
+    public KafkaService kafkaService(KafkaMessageService kafkaMessageService) {
+        return new KafkaServiceImpl(kafkaTemplate, kafkaMessageService, server, groupId, producerTopic, consumerTopic);
+    }
+
 }

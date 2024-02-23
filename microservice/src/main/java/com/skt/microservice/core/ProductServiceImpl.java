@@ -34,7 +34,7 @@ public class ProductServiceImpl implements ProductService {
     public void processMessage(KafkaMessage message) {
         switch (message.getAction()) {
             case SELECT:
-                processSelectionAction();
+                processSelectionAction(message);
                 break;
             default:
                 LOG.error("Unsupported Action: " + message.getAction());
@@ -42,13 +42,13 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    private void processSelectionAction() {
+    private void processSelectionAction(KafkaMessage message) {
         List<ProductEntity> productEntities = productRepository.findAllProducts();
         List<KafkaProduct> products = productEntities
                 .stream()
                 .map(this::kafkaProduct)
                 .collect(Collectors.toList());
-        kafkaService.send(kafkaMessageService.buildSelectResponse(products));
+        kafkaService.send(kafkaMessageService.buildSelectResponse(message.getKey(), products));
     }
 
     private KafkaProduct kafkaProduct(ProductEntity productEntity) {

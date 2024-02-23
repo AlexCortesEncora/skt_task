@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,29 +28,24 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> sendGetAllMessage() {
-        kafkaService.send(kafkaMessageService.buildSelectRequest());
-        return Collections.emptyList();
-    }
-
-    @Override
-    public void processMessage(KafkaMessage message) {
-        switch (message.getAction()) {
-            case SELECT:
-                processSelectionAction(message);
-                break;
-            default:
-                LOG.error("Unsupported Action: " + message.getAction());
-                break;
+        try {
+            List<Product> products = new ArrayList<>();
+            KafkaMessage kafkaMessage = kafkaMessageService.buildSelectRequest();
+            kafkaService.send(kafkaMessage);
+            kafkaService.receiveMessage(kafkaMessage.getKey())
+                    .ifPresent(message -> products.addAll(processSelectionAction(message)));
+            return products;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Collections.emptyList();
         }
     }
 
-
-    private void processSelectionAction(KafkaMessage message) {
-        ((List<KafkaProduct>) message.getPayload())
+    private List<Product> processSelectionAction(KafkaMessage message) {
+        return (kafkaMessageService.parsingPayloadToKafkaProducts(message.getPayload()))
                 .stream()
                 .map(this::product)
-                .collect(Collectors.toList())
-                .forEach(product -> LOG.info(product.toString()));
+                .collect(Collectors.toList());
     }
 
     private Product product(KafkaProduct kafkaProduct) {
