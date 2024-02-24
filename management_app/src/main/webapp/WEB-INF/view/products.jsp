@@ -10,40 +10,57 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
 </head>
 <body>
-<div class="container my-2">
+<div class="container my-5">
     <div class="card">
+        <div class="card-tittle">
+            <div class="container">
+                <div class="col-md-12">
+                    <h1>Products</h1>
+                </div>
+            </div>
+        </div>
         <div class="card-body">
-            <div class="container my-5">
-                <p class="my-5">
-                    <a href="/management_app/add-product" class="btn btn-primary">
-                        <i class="fas fa-user-plus ml-2">Add Product </i>
-                    </a>
-                </p>
-                <div class="col-md-10">
-                    <c:if test="${products.size()==0}">
-                        <h2>No record found !!</h2>
+            <div class="container my-1">
+                <div class="col-md-12">
+                    <c:if test="${status eq 'ERROR'}">
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <strong>Error!</strong> ${message}
+                        </div>
                     </c:if>
-                    <c:if test="${products.size() gt 0 }">
+
+                    <c:if test="${status eq 'SUCCESS'}">
                         <div>
                             <table class="table table-striped table-responsive-md">
                                 <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    <th>Price</th>
+                                    <th style="text-align: center">Name</th>
+                                    <th style="text-align: center">Description</th>
+                                    <th style="text-align: center">Price</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <c:forEach var="product" items="${products}">
+                                <c:if test="${products.size()==0}">
                                     <tr>
-                                        <td>${product.name}</td>
-                                        <td>${product.description}</td>
-                                        <td>${product.price}</td>
+                                        <td colspan="3" style="text-align: center">No record found</td>
                                     </tr>
-                                </c:forEach>
+                                </c:if>
+                                <c:if test="${products.size() gt 0 }">
+                                    <c:forEach var="product" items="${products}">
+                                        <tr>
+                                            <td style="text-align: left">${product.name}</td>
+                                            <td style="text-align: center">${product.description}</td>
+                                            <td style="text-align: right">$ ${product.price}</td>
+                                        </tr>
+                                    </c:forEach>
+                                </c:if>
                                 </tbody>
                             </table>
                         </div>
+                        <p class="my-5">
+                            <a href="/management_app/add-product" class="btn btn-primary">
+                                <i class="fas fa-user-plus ml-2">Add Product </i>
+                            </a>
+                        </p>
                     </c:if>
                 </div>
             </div>

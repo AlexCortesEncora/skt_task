@@ -26,13 +26,15 @@ public class KafkaConfiguration {
     @Value(value = "${kafka.topic.consumer.name}")
     private String consumerTopic;
 
+    @Value(value = "${kafka.topic.consumer.poll-interval}")
+    private long consumerPollInterval;
+
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
     @Bean
     public ObjectMapper objectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper;
+        return new ObjectMapper();
     }
 
     @Bean
@@ -42,7 +44,8 @@ public class KafkaConfiguration {
 
     @Bean
     public KafkaService kafkaService(KafkaMessageService kafkaMessageService) {
-        return new KafkaServiceImpl(kafkaTemplate, kafkaMessageService, server, groupId, producerTopic, consumerTopic);
+        return new KafkaServiceImpl(kafkaTemplate, kafkaMessageService, server, groupId, producerTopic, consumerTopic,
+                consumerPollInterval);
     }
 
 }
