@@ -7,10 +7,10 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skt.common.exception.input.InputDataException;
 import com.skt.common.exception.input.MalformedDataException;
+import com.skt.common.kafka.model.KafkaAction;
 import com.skt.common.kafka.model.KafkaMessage;
 import com.skt.common.kafka.model.KafkaMessageStatus;
 import com.skt.common.kafka.model.KafkaProduct;
-import com.skt.management_app.model.KafkaAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

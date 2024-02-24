@@ -5,9 +5,6 @@ public class KafkaProduct {
     private String description;
     private float price;
 
-    public KafkaProduct() {
-    }
-
     public KafkaProduct(String name, String description, float price) {
         this.name = name;
         this.description = description;

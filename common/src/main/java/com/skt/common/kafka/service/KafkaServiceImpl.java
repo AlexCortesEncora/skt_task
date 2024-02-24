@@ -68,9 +68,7 @@ public class KafkaServiceImpl implements KafkaService {
 
                 LOG.info("(Key: {} - Retry: {}) - topic has {} records", key, noRetries, consumerRecords.count());
                 if (consumerRecords.count() > 0) {
-                    Iterator<ConsumerRecord<Long, String>> iterator = consumerRecords.iterator();
-                    while (iterator.hasNext()) {
-                        ConsumerRecord<Long, String> record = iterator.next();
+                    for (ConsumerRecord<Long, String> record : consumerRecords) {
                         KafkaMessage kafkaMessage = kafkaMessageService.parsingJsonToKafkaMessage(record.value());
                         if (kafkaMessage.getKey().equals(key)) {
                             LOG.info("(Key: {} - Retry: {}) - message found", key, noRetries);

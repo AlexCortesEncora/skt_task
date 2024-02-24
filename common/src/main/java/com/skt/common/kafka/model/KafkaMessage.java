@@ -1,7 +1,6 @@
 package com.skt.common.kafka.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.skt.management_app.model.KafkaAction;
 
 import java.util.UUID;
 

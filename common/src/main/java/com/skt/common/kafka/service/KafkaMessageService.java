@@ -2,9 +2,9 @@ package com.skt.common.kafka.service;
 
 import com.skt.common.exception.input.InputDataException;
 import com.skt.common.exception.input.MalformedDataException;
+import com.skt.common.kafka.model.KafkaAction;
 import com.skt.common.kafka.model.KafkaMessage;
 import com.skt.common.kafka.model.KafkaProduct;
-import com.skt.management_app.model.KafkaAction;
 
 import java.util.List;
 import java.util.UUID;
