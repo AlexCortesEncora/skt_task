@@ -1,4 +1,4 @@
-package com.skt.management_app.model;
+package com.skt.common.kafka.model;
 
 public enum KafkaAction {
     SELECT
