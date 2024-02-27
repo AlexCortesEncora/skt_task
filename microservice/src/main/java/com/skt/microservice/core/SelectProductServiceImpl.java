@@ -8,6 +8,8 @@ import com.skt.common.kafka.service.KafkaMessageService;
 import com.skt.common.kafka.service.KafkaService;
 import com.skt.microservice.persistence.ProductRepository;
 import com.skt.microservice.persistence.entity.ProductEntity;
+import org.hibernate.exception.JDBCConnectionException;
+import org.hibernate.exception.SQLGrammarException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +52,7 @@ public class SelectProductServiceImpl implements SelectProductService {
         try {
             LOG.info("#{} - Get Product list from DB", kafkaMessage.getKey());
             return productRepository.findAllProducts();
-        } catch (DataAccessException ex) {
+        } catch (DataAccessException | JDBCConnectionException | SQLGrammarException ex) {
             LOG.error("Database Error: {}", ex.getMessage());
             throw new InfrastructureException(ex.getMessage(), ex.getCause());
         }

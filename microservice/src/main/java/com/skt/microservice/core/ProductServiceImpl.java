@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -23,7 +22,6 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private SelectProductService selectProductService;
 
-    @Transactional
     @Override
     public void processMessage(KafkaMessage message) {
         switch (message.getAction()) {
