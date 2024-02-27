@@ -1,5 +1,8 @@
 package com.skt.common.kafka.model;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 public class KafkaProduct {
     private String name;
     private String description;
@@ -36,5 +39,21 @@ public class KafkaProduct {
 
     public void setPrice(float price) {
         this.price = price;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        KafkaProduct that = (KafkaProduct) o;
+
+        return new EqualsBuilder().append(price, that.price).append(name, that.name).append(description, that.description).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(name).append(description).append(price).toHashCode();
     }
 }
