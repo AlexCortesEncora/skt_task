@@ -1,6 +1,7 @@
 package com.skt.management_app.core;
 
 import com.skt.common.exception.SKTException;
+import com.skt.common.exception.business.BusinessException;
 import com.skt.common.exception.external.ThirdPartyServiceException;
 import com.skt.common.kafka.model.KafkaMessage;
 import com.skt.common.kafka.model.KafkaMessageStatus;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -57,16 +59,21 @@ public class SelectProductServiceImpl implements SelectProductService {
     public List<Product> readResponse(UUID kafkaMessageKey) {
         List<Product> products = new ArrayList<>();
         LOG.info("#{} - Subscribe topic and wait for the response", kafkaMessageKey);
-        kafkaService.receiveMessage(kafkaMessageKey)
-                .ifPresent(message -> {
-                    LOG.info("#{} - Parsing Message to product list", kafkaMessageKey);
-                    if (message.getStatus().equals(KafkaMessageStatus.SUCCESS)) {
-                        products.addAll(kafkaProductsToProducts(message));
-                    } else {
-                        LOG.error("Message with error status: {}", message.getPayload());
-                        throw new ThirdPartyServiceException("Message with error status: " + message.getPayload());
-                    }
-                });
+        Optional<KafkaMessage> opMessage = kafkaService.receiveMessage(kafkaMessageKey);
+        if (opMessage.isPresent()) {
+            opMessage.ifPresent(message -> {
+                LOG.info("#{} - Parsing Message to product list", kafkaMessageKey);
+                if (message.getStatus().equals(KafkaMessageStatus.SUCCESS)) {
+                    products.addAll(kafkaProductsToProducts(message));
+                } else {
+                    LOG.error("Message with error status: {}", message.getPayload());
+                    throw new ThirdPartyServiceException("Message with error status: " + message.getPayload());
+                }
+            });
+        } else {
+            LOG.warn("Response was never received for the key: {}", kafkaMessageKey);
+            throw new BusinessException("Response was never received for the key: " + kafkaMessageKey);
+        }
         LOG.info("#{} - Getting {} products from DB", kafkaMessageKey, products.size());
         return products;
     }

@@ -1,6 +1,6 @@
 package com.skt.management_app.controller;
 
-import com.skt.management_app.core.SelectProductService;
+import com.skt.management_app.core.ProductService;
 import com.skt.management_app.model.SelectProductResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,12 +11,12 @@ import org.springframework.web.servlet.ModelAndView;
 public class ProductController {
 
     @Autowired
-    private SelectProductService selectProductService;
+    private ProductService productService;
 
     @GetMapping("/products")
     public ModelAndView getAllStudents() {
         ModelAndView view = new ModelAndView("products");
-        SelectProductResponse response = selectProductService.selectAll();
+        SelectProductResponse response = productService.selectAll();
         view.addObject("status", response.getStatus())
                 .addObject("message", response.getMessage())
                 .addObject("products", response.getProducts());
