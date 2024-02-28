@@ -46,7 +46,7 @@ public class KafkaServiceImplTest {
     }
 
     @Test
-    public void testSend() throws ExecutionException, InterruptedException, TimeoutException {
+    public void Given_Send_When_KafkaTemplateSendMessage_Then_ServiceFinishSuccessfully() throws ExecutionException, InterruptedException, TimeoutException {
         String json = "{}";
         ListenableFuture<SendResult<String, String>> future = mock(ListenableFuture.class);
         SendResult<String, String> sendResult = mock(SendResult.class);
@@ -60,7 +60,7 @@ public class KafkaServiceImplTest {
     }
 
     @Test(expected = InfrastructureException.class)
-    public void testSendShouldThrowInfrastructureException() throws ExecutionException, InterruptedException, TimeoutException {
+    public void Given_Send_When_KafkaTemplateThrowTimeException_Then_ThrowInfrastructureException() throws ExecutionException, InterruptedException, TimeoutException {
         String json = "{}";
         ListenableFuture<SendResult<String, String>> future = mock(ListenableFuture.class);
 
@@ -72,7 +72,7 @@ public class KafkaServiceImplTest {
     }
 
     @Test
-    public void testReceiveMessage() {
+    public void Given_ReceiveMessage_When_ConsumerReturnMessageMatchWithKey_Then_ReturnKafkaMessage() {
         UUID key = getKey();
         String json = buildKafkaMessageJson(key);
         KafkaMessage kafkaMessage = new KafkaMessage();
@@ -93,7 +93,7 @@ public class KafkaServiceImplTest {
     }
 
     @Test
-    public void testReceiveMessageShouldReturnEmptyOptionalWhenMessageKeyIsNotFound() {
+    public void Given_ReceiveMessage_When_ConsumerReturnMessageNotMatchWithKey_Then_ReturnEmptyOptional() {
         UUID key = getKey();
         UUID otherKey = getKey();
         String json = buildKafkaMessageJson(key);
@@ -114,7 +114,7 @@ public class KafkaServiceImplTest {
     }
 
     @Test
-    public void testReceiveMessageShouldReturnEmptyOptionalWhenConsumerThrowAnIllegalStateException() {
+    public void Given_ReceiveMessage_When_ConsumerThrowIllegalStateException_Then_ReturnEmptyOptional() {
         Consumer<Long, String> consumer = mock(Consumer.class);
 
         when(consumer.poll(CONSUMER_POLL_INTERVAL)).thenThrow(new IllegalStateException());

@@ -80,7 +80,7 @@ public class KafkaMessageServiceImplTest {
     }
 
     @Test(expected = MalformedDataException.class)
-    public void testParsingKafkaMessageToJsonShouldThrowMalformedDataException() throws JsonProcessingException {
+    public void Given_ParsingKafkaMessageToJson_When_ObjectMapperThrowJsonProcessingException_Then_ThrowMalformedDataException() throws JsonProcessingException {
         when(objectMapper.writeValueAsString(any(KafkaMessage.class)))
                 .thenThrow(new JsonProcessingException(new Throwable("Test")) {
                 });
@@ -95,7 +95,7 @@ public class KafkaMessageServiceImplTest {
     }
 
     @Test(expected = MalformedDataException.class)
-    public void testParsingJsonToKafkaMessageShouldThrowMalformedDataException() throws IOException {
+    public void Given_ParsingJsonToKafkaMessage_When_ObjectMapperThrowJsonMappingException_Then_ThrowMalformedDataException() throws IOException {
         String json = "{}";
         when(objectMapper.readValue(json, KafkaMessage.class))
                 .thenThrow(new JsonMappingException("Test") {
@@ -104,7 +104,7 @@ public class KafkaMessageServiceImplTest {
     }
 
     @Test(expected = InputDataException.class)
-    public void testParsingJsonToKafkaMessageShouldThrowInputDataException() throws IOException {
+    public void Given_ParsingJsonToKafkaMessage_When_ObjectMapperThrowJsonProcessingException_Then_ThrowInputDataException() throws IOException {
         String json = "{}";
         when(objectMapper.readValue(json, KafkaMessage.class))
                 .thenThrow(new JsonProcessingException("Test") {
@@ -120,7 +120,7 @@ public class KafkaMessageServiceImplTest {
     }
 
     @Test
-    public void testParsingPayloadToKafkaProductsShouldReturnEmptyCollection() {
+    public void Given_ParsingPayloadToKafkaProducts_When_ObjectMapperThrowIllegalArgumentException_Then_ReturnEmptyCollection() {
         when(objectMapper.convertValue(any(Object.class), any(TypeReference.class)))
                 .thenThrow(new IllegalArgumentException("Test") {
                 });
