@@ -22,9 +22,9 @@ import java.util.stream.Collectors;
 @Service
 public class SelectProductServiceImpl implements SelectProductService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SelectProductServiceImpl.class);
+    public static final String ERR_USER_MSG = "An error occurred while processing the message";
 
-    private static final String ERR_USER_MSG = "An error occurred while processing the message";
+    private static final Logger LOG = LoggerFactory.getLogger(SelectProductServiceImpl.class);
 
     @Autowired
     private ProductRepository productRepository;
@@ -38,8 +38,7 @@ public class SelectProductServiceImpl implements SelectProductService {
     @Override
     public void processMessage(KafkaMessage kafkaMessage) {
         try {
-            List<ProductEntity> productEntities = getProducts(kafkaMessage);
-            sendProducts(kafkaMessage, productEntities);
+            sendProducts(kafkaMessage, getProducts(kafkaMessage));
         } catch (SKTException ex) {
             sendErrorMessage(kafkaMessage);
         } catch (Exception ex) {
