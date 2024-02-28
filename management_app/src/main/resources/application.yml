@@ -26,7 +26,7 @@ kafka:
       poll-interval: 3000
 
 sonar:
-  projectKey: "management-app"
+  projectKey: "skt-task-management-app"
   projectName: "SKT Management App"
   host:
     url: "http://localhost:9000"

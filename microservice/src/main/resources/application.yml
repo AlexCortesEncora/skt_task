@@ -30,7 +30,7 @@ kafka:
       poll-interval: 3000
 
 sonar:
-  projectKey: "microservice"
+  projectKey: "skt-task-microservice"
   projectName: "SKT Microservice"
   host:
     url: "http://localhost:9000"

@@ -1,0 +1,5 @@
+sonar:
+  projectKey: "skt-task-common"
+  projectName: "SKT Common"
+  host:
+    url: "http://localhost:9000"
