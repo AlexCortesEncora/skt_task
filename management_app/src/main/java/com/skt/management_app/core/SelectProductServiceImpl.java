@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
 @Service
 public class SelectProductServiceImpl implements SelectProductService {
 
+    public static final String ERROR_USER_MSG = "Oh no! Something bad happened. Please contact with your Administrator";
     private static final Logger LOG = LoggerFactory.getLogger(SelectProductServiceImpl.class);
-    private static final String ERROR_USER_MSG = "Oh no! Something bad happened. Please contact with your Administrator";
 
     @Autowired
     private KafkaService kafkaService;
