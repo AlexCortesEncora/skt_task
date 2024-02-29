@@ -1,0 +1,36 @@
+server:
+  context-path: "/management_app"
+  port: 8081
+
+spring:
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/postgres"
+    username: "postgres"
+    password: "postgres"
+  jpa:
+    show-sql: true
+
+  kafka:
+    bootstrap-servers: "127.0.0.1:29092"
+    consumer:
+      group-id: "task"
+
+logging:
+  level:
+    org:
+      apache:
+        kafka: "WARN"
+
+kafka:
+  topic:
+    producer:
+      name: "response_product_topic"
+    consumer:
+      name: "request_product_topic"
+      poll-interval: 3000
+
+sonar:
+  projectKey: "skt-task-microservice"
+  projectName: "SKT Microservice"
+  host:
+    url: "http://localhost:9000"
