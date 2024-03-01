@@ -43,6 +43,20 @@ public class KafkaMessageServiceImplTest {
     }
 
     @Test
+    public void buildSaveProductRequest() {
+        String name = "Dummy";
+        String description = "Test Product";
+        float price = 19.99F;
+        KafkaProduct productExpected = new KafkaProduct(name, description, price);
+
+        KafkaMessage kafkaMessage = kafkaMessageService.buildSaveProductRequest(name, description, price);
+        assertNotNull(kafkaMessage);
+        assertNotNull(kafkaMessage.getKey());
+        assertThat(kafkaMessage.getAction(), is(KafkaAction.SAVE));
+        assertThat(kafkaMessage.getPayload(), is(productExpected));
+    }
+
+    @Test
     public void testSelectSuccessResponse() {
         UUID key = getKey();
         List<KafkaProduct> products = new ArrayList<>();
@@ -54,6 +68,19 @@ public class KafkaMessageServiceImplTest {
         assertThat(kafkaMessage.getAction(), is(KafkaAction.SELECT));
         assertThat(kafkaMessage.getStatus(), is(KafkaMessageStatus.SUCCESS));
         assertThat(kafkaMessage.getPayload(), is(products));
+    }
+
+    @Test
+    public void testSaveSuccessResponse() {
+        UUID key = getKey();
+        Integer productId = 1;
+
+        KafkaMessage kafkaMessage = kafkaMessageService.buildSaveSuccessResponse(key, productId);
+        assertNotNull(kafkaMessage);
+        assertThat(kafkaMessage.getKey(), is(key));
+        assertThat(kafkaMessage.getAction(), is(KafkaAction.SAVE));
+        assertThat(kafkaMessage.getStatus(), is(KafkaMessageStatus.SUCCESS));
+        assertThat(kafkaMessage.getPayload(), is(productId));
     }
 
     @Test
@@ -125,6 +152,23 @@ public class KafkaMessageServiceImplTest {
                 .thenThrow(new IllegalArgumentException("Test") {
                 });
         assertTrue(kafkaMessageService.parsingPayloadToKafkaProducts(new Object()).isEmpty());
+    }
+
+    @Test
+    public void parsingPayloadToKafkaProduct() {
+        String payload = "{}";
+        when(objectMapper.convertValue(payload, KafkaProduct.class))
+                .thenReturn(new KafkaProduct());
+        assertNotNull(kafkaMessageService.parsingPayloadToKafkaProduct(payload));
+    }
+
+    @Test(expected = MalformedDataException.class)
+    public void Given_ParsingPayloadToKafkaProduct_When_ObjectMapperThrowIllegalArgumentException_Then_ThrowMalformedDataException() {
+        String payload = "{}";
+        when(objectMapper.convertValue(payload, KafkaProduct.class))
+                .thenThrow(new IllegalArgumentException("Test") {
+                });
+        kafkaMessageService.parsingPayloadToKafkaProduct(payload);
     }
 
     private UUID getKey() {
