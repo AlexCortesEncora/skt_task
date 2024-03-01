@@ -16,8 +16,4 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
     @Query(value = "call create_product(:productName, :productDescription, :productPrice, null);", nativeQuery = true)
     Integer save(@Param("productName") String productName, @Param("productDescription") String productDescription,
                  @Param("productPrice") Float price);
-
-    @Query(value = "BEGIN; CALL public.select_products('result'); fetch all in \"result\";", nativeQuery = true)
-    List<ProductEntity> selectAllProducts();
-
 }

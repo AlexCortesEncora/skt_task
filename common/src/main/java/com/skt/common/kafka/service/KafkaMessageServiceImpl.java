@@ -11,6 +11,7 @@ import com.skt.common.kafka.model.KafkaAction;
 import com.skt.common.kafka.model.KafkaMessage;
 import com.skt.common.kafka.model.KafkaMessageStatus;
 import com.skt.common.kafka.model.KafkaProduct;
+import com.skt.common.util.SecurityEscape;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +43,7 @@ public class KafkaMessageServiceImpl implements KafkaMessageService {
         KafkaMessage kafkaMessage = new KafkaMessage();
         kafkaMessage.setKey(UUID.randomUUID());
         kafkaMessage.setAction(KafkaAction.SAVE);
-        kafkaMessage.setPayload(new KafkaProduct(name, description, price));
+        kafkaMessage.setPayload(new KafkaProduct(SecurityEscape.cleanIt(name), SecurityEscape.cleanIt(description), price));
         return kafkaMessage;
 
     }
