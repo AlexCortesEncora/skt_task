@@ -22,11 +22,17 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private SelectProductService selectProductService;
 
+    @Autowired
+    private SaveProductService saveProductService;
+
     @Override
     public void processMessage(KafkaMessage message) {
         switch (message.getAction()) {
             case SELECT:
                 selectProductService.processMessage(message);
+                break;
+            case SAVE:
+                saveProductService.processMessage(message);
                 break;
             default:
                 LOG.error("Unsupported Action: {}", message.getAction());

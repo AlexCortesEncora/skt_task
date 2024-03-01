@@ -12,8 +12,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.UUID;
 
-import static com.skt.common.kafka.model.KafkaAction.DEFAULT;
-import static com.skt.common.kafka.model.KafkaAction.SELECT;
+import static com.skt.common.kafka.model.KafkaAction.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -30,6 +29,8 @@ public class ProductServiceImplTest {
 
     @Mock
     private SelectProductService selectProductService;
+    @Mock
+    private SaveProductService saveProductService;
 
     @Test
     public void Given_ProcessMessage_When_KafkaMessageOptionIsSelect_Then_SelectProductServiceIsExecute() {
@@ -38,6 +39,15 @@ public class ProductServiceImplTest {
 
         productService.processMessage(kafkaMessage);
         verify(selectProductService, times(1)).processMessage(kafkaMessage);
+    }
+
+    @Test
+    public void Given_ProcessMessage_When_KafkaMessageOptionIsSave_Then_SaveProductServiceIsExecute() {
+        KafkaMessage kafkaMessage = getKafkaMessage(SAVE);
+        doNothing().when(saveProductService).processMessage(kafkaMessage);
+
+        productService.processMessage(kafkaMessage);
+        verify(saveProductService, times(1)).processMessage(kafkaMessage);
     }
 
     @Test

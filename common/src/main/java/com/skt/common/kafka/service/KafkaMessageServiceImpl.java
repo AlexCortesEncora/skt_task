@@ -11,6 +11,7 @@ import com.skt.common.kafka.model.KafkaAction;
 import com.skt.common.kafka.model.KafkaMessage;
 import com.skt.common.kafka.model.KafkaMessageStatus;
 import com.skt.common.kafka.model.KafkaProduct;
+import com.skt.common.util.SecurityEscape;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,12 +39,32 @@ public class KafkaMessageServiceImpl implements KafkaMessageService {
     }
 
     @Override
+    public KafkaMessage buildSaveProductRequest(String name, String description, Float price) {
+        KafkaMessage kafkaMessage = new KafkaMessage();
+        kafkaMessage.setKey(UUID.randomUUID());
+        kafkaMessage.setAction(KafkaAction.SAVE);
+        kafkaMessage.setPayload(new KafkaProduct(SecurityEscape.cleanIt(name), SecurityEscape.cleanIt(description), price));
+        return kafkaMessage;
+
+    }
+
+    @Override
     public KafkaMessage buildSelectSuccessResponse(UUID key, List<KafkaProduct> products) {
         KafkaMessage kafkaMessage = new KafkaMessage();
         kafkaMessage.setKey(key);
         kafkaMessage.setAction(KafkaAction.SELECT);
         kafkaMessage.setStatus(KafkaMessageStatus.SUCCESS);
         kafkaMessage.setPayload(products);
+        return kafkaMessage;
+    }
+
+    @Override
+    public KafkaMessage buildSaveSuccessResponse(UUID key, Integer id) {
+        KafkaMessage kafkaMessage = new KafkaMessage();
+        kafkaMessage.setKey(key);
+        kafkaMessage.setAction(KafkaAction.SAVE);
+        kafkaMessage.setStatus(KafkaMessageStatus.SUCCESS);
+        kafkaMessage.setPayload(id);
         return kafkaMessage;
     }
 
@@ -88,6 +109,16 @@ public class KafkaMessageServiceImpl implements KafkaMessageService {
         } catch (IllegalArgumentException ex) {
             LOG.error("Kafka Payload Message can't be parsing to Kafka Product list: {}", ex.getMessage());
             return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public KafkaProduct parsingPayloadToKafkaProduct(Object payload) {
+        try {
+            return objectMapper.convertValue(payload, KafkaProduct.class);
+        } catch (IllegalArgumentException ex) {
+            LOG.error("Payload can't be parsing to KafkaProduct: {}", ex.getMessage());
+            throw new MalformedDataException(ex.getMessage(), ex.getCause());
         }
     }
 }
